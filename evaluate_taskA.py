@@ -9,7 +9,7 @@ from sklearn.metrics import classification_report, f1_score, accuracy_score
 from tqdm import tqdm
 
 # ==============================
-# 1️⃣ CONFIGURATION
+# CONFIGURATION
 # ==============================
 TRAIN_CSV = "train.csv"
 META_CSV = "metadata.csv"
@@ -22,7 +22,7 @@ BATCH_SIZE = 32
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ==============================
-# 2️⃣ FEATURE EXTRACTION
+#  FEATURE EXTRACTION
 # ==============================
 def extract_features(file_path):
     try:
@@ -36,7 +36,7 @@ def extract_features(file_path):
         return np.zeros(NUM_MFCC + 7)
 
 # ==============================
-# 3️⃣ DATASET CLASS
+#  DATASET CLASS
 # ==============================
 class VoiceDataset(Dataset):
     def __init__(self, csv_file, audio_dir, label_map):
@@ -56,7 +56,7 @@ class VoiceDataset(Dataset):
         return torch.tensor(feat, dtype=torch.float32), torch.tensor(label_id, dtype=torch.long)
 
 # ==============================
-# 4️⃣ MODEL
+#  MODEL
 # ==============================
 class VoiceClassifier(nn.Module):
     def __init__(self, input_dim, num_classes):
@@ -74,7 +74,7 @@ class VoiceClassifier(nn.Module):
         return self.net(x)
 
 # ==============================
-# 5️⃣ EVALUATION FUNCTION
+#  EVALUATION FUNCTION
 # ==============================
 def evaluate_model(model, loader):
     model.eval()
@@ -87,15 +87,15 @@ def evaluate_model(model, loader):
             preds.extend(predicted.cpu().numpy())
             labels.extend(y.cpu().numpy())
 
-    print("\n📊 Evaluation Report:")
+    print("\n Evaluation Report:")
     print(classification_report(labels, preds, digits=3))
     acc = accuracy_score(labels, preds)
     f1 = f1_score(labels, preds, average='macro')
-    print(f"✅ Accuracy: {acc*100:.2f}%")
-    print(f"🎯 Macro F1: {f1:.4f}")
+    print(f" Accuracy: {acc*100:.2f}%")
+    print(f" Macro F1: {f1*100:.4f}%")
 
 # ==============================
-# 6️⃣ MAIN
+# 6 MAIN
 # ==============================
 def main():
     print("🔹 Loading metadata...")
@@ -120,7 +120,7 @@ def main():
     state_dict = torch.load(MODEL_PATH, map_location=DEVICE)
     model.load_state_dict(state_dict)
 
-    print("🚀 Running Evaluation...")
+    print(" Running Evaluation...")
     evaluate_model(model, eval_loader)
 
 if __name__ == "__main__":

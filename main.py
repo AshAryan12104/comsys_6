@@ -10,7 +10,7 @@ from sklearn.metrics import classification_report, f1_score, accuracy_score
 from tqdm import tqdm
 
 # ==============================
-# 1️⃣ CONFIGURATION
+#  CONFIGURATION
 # ==============================
 TRAIN_CSV = "train.csv"
 TEST_CSV = "test.csv"
@@ -26,7 +26,7 @@ LR = 0.001
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ==============================
-# 2️⃣ FEATURE EXTRACTION
+#  FEATURE EXTRACTION
 # ==============================
 def extract_features(file_path):
     try:
@@ -40,7 +40,7 @@ def extract_features(file_path):
         return np.zeros(NUM_MFCC + 7)
 
 # ==============================
-# 3️⃣ DATASET CLASS
+#  DATASET CLASS
 # ==============================
 class VoiceDataset(Dataset):
     def __init__(self, csv_file, audio_dir, label_map=None, train_mode=True):
@@ -67,7 +67,7 @@ class VoiceDataset(Dataset):
             return torch.tensor(feat, dtype=torch.float32), file_name
 
 # ==============================
-# 4️⃣ MODEL
+#  MODEL
 # ==============================
 class VoiceClassifier(nn.Module):
     def __init__(self, input_dim, num_classes):
@@ -85,7 +85,7 @@ class VoiceClassifier(nn.Module):
         return self.net(x)
 
 # ==============================
-# 5️⃣ TRAINING & EVALUATION
+#  TRAINING & EVALUATION
 # ==============================
 def train_model(model, train_loader, val_loader, criterion, optimizer, epochs):
     for epoch in range(epochs):
@@ -103,7 +103,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, epochs):
             loop.set_postfix(loss=loss.item())
 
         avg_loss = total_loss / len(train_loader)
-        print(f"\n📘 Epoch [{epoch+1}/{epochs}] | Avg Loss: {avg_loss:.4f}")
+        print(f"\n Epoch [{epoch+1}/{epochs}] | Avg Loss: {avg_loss:.4f}")
         evaluate_model(model, val_loader, name="Validation")
 
 def evaluate_model(model, loader, name="Validation"):
@@ -117,15 +117,15 @@ def evaluate_model(model, loader, name="Validation"):
             preds.extend(predicted.cpu().numpy())
             labels.extend(y.cpu().numpy())
 
-    print(f"\n📊 {name} Results:")
+    print(f"\n {name} Results:")
     print(classification_report(labels, preds, digits=3))
     acc = accuracy_score(labels, preds)
     f1 = f1_score(labels, preds, average='macro')
-    print(f"✅ Accuracy: {acc*100:.2f}% | 🎯 Macro F1: {f1:.4f}")
+    print(f" Accuracy: {acc*100:.2f}% |  Macro F1: {f1*100:.4f}%")
     return acc, f1
 
 # ==============================
-# 6️⃣ MAIN PIPELINE
+#  MAIN PIPELINE
 # ==============================
 def main():
     print("🔹 Loading dataset CSVs...")
@@ -136,7 +136,7 @@ def main():
     unique_labels = sorted(df_meta['Label ID'].unique())
     label_map = {label_id: i for i, label_id in enumerate(unique_labels)}
     num_classes = len(unique_labels)
-    print(f"📁 Found {num_classes} classes.")
+    print(f" Found {num_classes} classes.")
 
     # Dataset split
     full_dataset = VoiceDataset(TRAIN_CSV, TRAIN_AUDIO_DIR, label_map, train_mode=True)
@@ -156,12 +156,12 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LR)
 
-    print("\n🚀 Starting Training...")
+    print("\n Starting Training...")
     train_model(model, train_loader, val_loader, criterion, optimizer, EPOCHS)
 
     os.makedirs("saved_model", exist_ok=True)
     torch.save(model.state_dict(), "saved_model/voice_classifier.pth")
-    print("\n✅ Model saved at saved_model/voice_classifier.pth")
+    print("\n Model saved at saved_model/voice_classifier.pth")
 
     # ======================
     # 🔹 TEST EVALUATION
@@ -186,7 +186,7 @@ def main():
 
     submission = pd.DataFrame({"File_name": files, "target": final_preds})
     submission.to_csv("submission.csv", index=False)
-    print("\n📄 submission.csv generated successfully!")
+    print("\n submission.csv generated successfully!")
 
 # ==============================
 # 7️⃣ RUN
