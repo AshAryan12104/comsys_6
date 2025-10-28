@@ -1,0 +1,5 @@
+Class Name,Label ID,Description
+RealAudio,0,Genuine unaltered real-world audio recording.
+RealAudioDistorted,1,Real audio that has been distorted or degraded (e.g. with noise or compression artifacts).
+FakeAudio,2,Synthetic or AI-generated audio sample.
+FakeAudioDistorted,3,Synthetic audio that has been distorted or degraded.
