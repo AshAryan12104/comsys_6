@@ -1,4 +1,4 @@
-# 🎤 Voice Classification using MFCC + Spectral Contrast Features
+#  Voice Classification using MFCC + Spectral Contrast Features
 
 This project focuses on **classifying audio samples into multiple voice classes** using extracted MFCC and Spectral Contrast features.  
 It implements a clean and reproducible **PyTorch pipeline** that covers feature extraction, model training, evaluation, and submission generation.
@@ -23,14 +23,14 @@ project/
 
 ---
 
-## 📦 Dataset Access
+##  Dataset Access
 
 place the dataset folders as shown above inside your project directory.
 as shown in folder structure
 
 ---
 
-## ⚙️ Requirements
+##  Requirements
 
 Install dependencies before running:
 ```bash
@@ -39,9 +39,9 @@ pip install torch torchvision torchaudio librosa pandas numpy scikit-learn tqdm
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
-### 1️⃣ Train the Model
+###  Train the Model
 Run the following command to start training and automatically generate predictions:
 ```bash
 python main.py
@@ -56,7 +56,7 @@ This will:
 
 ---
 
-### 2️⃣ Evaluate Using Saved Model
+###  Evaluate Using Saved Model
 Once training is complete, you can evaluate the trained model without retraining:
 ```bash
 python evaluate_taskA.py
@@ -69,7 +69,7 @@ This will:
 
 ---
 
-## 🧠 Model Architecture
+##  Model Architecture
 
 The model is a **fully connected feedforward neural network** designed for compact feature representations.
 
@@ -83,7 +83,7 @@ Optimizer: **Adam** (lr = 0.001)
 
 ---
 
-## 🎧 Feature Extraction
+##  Feature Extraction
 
 Each audio file is processed as follows:
 1. Loaded using `librosa` at 16 kHz sampling rate.  
@@ -92,7 +92,7 @@ Each audio file is processed as follows:
 
 ---
 
-## 📊 Evaluation Metrics
+##  Evaluation Metrics
 
 During evaluation, the model reports:
 - **Accuracy**
@@ -102,13 +102,13 @@ During evaluation, the model reports:
 
 Result after training using given dataset:
 ```
-✅ Accuracy: 97.02%
-🎯 Macro F1: 96.09%
+ Accuracy: 97.02%
+ Macro F1: 96.09%
 ```
 
 ---
 
-## 🏁 Output
+##  Output
 
 The final predictions are stored in:
 ```
@@ -126,6 +126,6 @@ Format:
 
 ---
 
-## 📘 License
+##  License
 
 This project is released under the **MIT License** — free for educational and research use.
