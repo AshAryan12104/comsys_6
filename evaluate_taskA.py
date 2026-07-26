@@ -8,9 +8,8 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import classification_report, f1_score, accuracy_score
 from tqdm import tqdm
 
-# ==============================
+
 # CONFIGURATION
-# ==============================
 TRAIN_CSV = "train.csv"
 META_CSV = "metadata.csv"
 TRAIN_AUDIO_DIR = "train"
@@ -21,9 +20,8 @@ NUM_MFCC = 20
 BATCH_SIZE = 32
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ==============================
+
 #  FEATURE EXTRACTION
-# ==============================
 def extract_features(file_path):
     try:
         y, sr = librosa.load(file_path, sr=SAMPLE_RATE)
@@ -32,12 +30,11 @@ def extract_features(file_path):
         feat = np.concatenate((np.mean(mfcc, axis=1), np.mean(spec_contrast, axis=1)))
         return feat
     except Exception as e:
-        print(f"⚠️ Error processing {file_path}: {e}")
+        print(f" Error processing {file_path}: {e}")
         return np.zeros(NUM_MFCC + 7)
 
-# ==============================
+
 #  DATASET CLASS
-# ==============================
 class VoiceDataset(Dataset):
     def __init__(self, csv_file, audio_dir, label_map):
         self.data = pd.read_csv(csv_file)
@@ -55,9 +52,8 @@ class VoiceDataset(Dataset):
         label_id = self.label_map.get(label_id, 0)
         return torch.tensor(feat, dtype=torch.float32), torch.tensor(label_id, dtype=torch.long)
 
-# ==============================
+
 #  MODEL
-# ==============================
 class VoiceClassifier(nn.Module):
     def __init__(self, input_dim, num_classes):
         super(VoiceClassifier, self).__init__()
@@ -73,9 +69,8 @@ class VoiceClassifier(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-# ==============================
+
 #  EVALUATION FUNCTION
-# ==============================
 def evaluate_model(model, loader):
     model.eval()
     preds, labels = [], []
@@ -94,11 +89,10 @@ def evaluate_model(model, loader):
     print(f" Accuracy: {acc*100:.2f}%")
     print(f" Macro F1: {f1*100:.4f}%")
 
-# ==============================
+
 # 6 MAIN
-# ==============================
 def main():
-    print("🔹 Loading metadata...")
+    print(" Loading metadata...")
     df_meta = pd.read_csv(META_CSV)
     df_train = pd.read_csv(TRAIN_CSV)
 
@@ -111,11 +105,11 @@ def main():
     first_file = os.path.join(TRAIN_AUDIO_DIR, df_train.iloc[0]['File_name'])
     input_dim = len(extract_features(first_file))
 
-    print("🔹 Loading evaluation dataset...")
+    print(" Loading evaluation dataset...")
     eval_dataset = VoiceDataset(TRAIN_CSV, TRAIN_AUDIO_DIR, label_map)
     eval_loader = DataLoader(eval_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    print("🔹 Loading saved model...")
+    print(" Loading saved model...")
     model = VoiceClassifier(input_dim, num_classes).to(DEVICE)
     state_dict = torch.load(MODEL_PATH, map_location=DEVICE)
     model.load_state_dict(state_dict)
