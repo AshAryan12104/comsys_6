@@ -9,9 +9,8 @@ from torch.utils.data import Dataset, DataLoader, random_split
 from sklearn.metrics import classification_report, f1_score, accuracy_score
 from tqdm import tqdm
 
-# ==============================
 #  CONFIGURATION
-# ==============================
+
 TRAIN_CSV = "train.csv"
 TEST_CSV = "test.csv"
 META_CSV = "metadata.csv"
@@ -25,9 +24,9 @@ EPOCHS = 10
 LR = 0.001
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ==============================
+
 #  FEATURE EXTRACTION
-# ==============================
+
 def extract_features(file_path):
     try:
         y, sr = librosa.load(file_path, sr=SAMPLE_RATE)
@@ -36,12 +35,12 @@ def extract_features(file_path):
         feat = np.concatenate((np.mean(mfcc, axis=1), np.mean(spec_contrast, axis=1)))
         return feat
     except Exception as e:
-        print(f"⚠️ Error processing {file_path}: {e}")
+        print(f" Error processing {file_path}: {e}")
         return np.zeros(NUM_MFCC + 7)
 
-# ==============================
+
 #  DATASET CLASS
-# ==============================
+
 class VoiceDataset(Dataset):
     def __init__(self, csv_file, audio_dir, label_map=None, train_mode=True):
         self.data = pd.read_csv(csv_file)
@@ -66,9 +65,9 @@ class VoiceDataset(Dataset):
         else:
             return torch.tensor(feat, dtype=torch.float32), file_name
 
-# ==============================
+
 #  MODEL
-# ==============================
+
 class VoiceClassifier(nn.Module):
     def __init__(self, input_dim, num_classes):
         super(VoiceClassifier, self).__init__()
@@ -84,9 +83,8 @@ class VoiceClassifier(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-# ==============================
 #  TRAINING & EVALUATION
-# ==============================
+
 def train_model(model, train_loader, val_loader, criterion, optimizer, epochs):
     for epoch in range(epochs):
         model.train()
@@ -124,9 +122,9 @@ def evaluate_model(model, loader, name="Validation"):
     print(f" Accuracy: {acc*100:.2f}% |  Macro F1: {f1*100:.4f}%")
     return acc, f1
 
-# ==============================
+
 #  MAIN PIPELINE
-# ==============================
+
 def main():
     print("🔹 Loading dataset CSVs...")
     df_train = pd.read_csv(TRAIN_CSV)
@@ -163,9 +161,9 @@ def main():
     torch.save(model.state_dict(), "saved_model/voice_classifier.pth")
     print("\n Model saved at saved_model/voice_classifier.pth")
 
-    # ======================
-    # 🔹 TEST EVALUATION
-    # ======================
+  
+    #  TEST EVALUATION
+   
     print("\n🔹 Generating predictions on test set...")
     test_dataset = VoiceDataset(TEST_CSV, TEST_AUDIO_DIR, label_map, train_mode=False)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
@@ -188,8 +186,8 @@ def main():
     submission.to_csv("submission.csv", index=False)
     print("\n submission.csv generated successfully!")
 
-# ==============================
-# 7️⃣ RUN
-# ==============================
+
+#  RUN
+
 if __name__ == "__main__":
     main()
